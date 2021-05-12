@@ -9,7 +9,7 @@ import { isMainPasswordValid } from "./utils/validation";
 
 const start = async () => {
   let mainPassword = await askForMainPassword();
-  while (!isMainPasswordValid(mainPassword)) {
+  while (!(await isMainPasswordValid(mainPassword))) {
     console.log("Is invalid");
     mainPassword = await askForMainPassword();
   }
