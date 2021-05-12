@@ -1,3 +1,7 @@
 {
-  hjksd
+  "credentials": [
+    { "userService": "GitHub", "userName": "Daniel", "userPassword": "321" },
+    { "userService": "Google", "userName": "Dan", "userPassword": "123" },
+    { "userService": "Codewars", "userName": "D", "userPassword": "abc" }
+  ]
 }

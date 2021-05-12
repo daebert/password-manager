@@ -1,3 +1,4 @@
+import { readCredentials } from "./utils/credentials";
 import { printPassword } from "./utils/messages";
 import {
   askForMainPassword,
@@ -20,7 +21,17 @@ const start = async () => {
   switch (command) {
     case "list":
       {
-        const service = await chooseService(["Github", "Codewars", "Google"]);
+        const credentials = await readCredentials();
+        const credentialServices = credentials.map(
+          (credential) => credential.userService
+        );
+        const service = await chooseService(credentialServices);
+        const selectedService = credentials.find(
+          (credential) => credential.userService === service
+        );
+
+        console.log(selectedService);
+
         printPassword(service);
       }
       break;
