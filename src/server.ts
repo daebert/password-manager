@@ -63,7 +63,7 @@ const start = async () => {
             if (selectedService) {
               deleteCredentials(selectedService);
 
-              console.log(`${service} is removed from list.`);
+              console.log(`${service} removed from list.`);
             }
           }
         }
