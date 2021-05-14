@@ -1,12 +1,18 @@
-import { readCredentials } from "./utils/credentials";
-import { printPassword } from "./utils/messages";
+import {
+  deleteCredentials,
+  readCredentials,
+  writeCredentials,
+} from "./utils/credentials";
+// import { printPassword } from "./utils/messages";
 import {
   askForMainPassword,
   askForNewCredentials,
+  chooseAction,
   chooseCommand,
   chooseService,
 } from "./utils/questions";
 import { isMainPasswordValid } from "./utils/validation";
+import CryptoJS from "crypto-js";
 
 const start = async () => {
   let mainPassword = await askForMainPassword();
@@ -21,24 +27,53 @@ const start = async () => {
   switch (command) {
     case "list":
       {
+        const action = await chooseAction();
         const credentials = await readCredentials();
-        const credentialServices = credentials.map(
-          (credential) => credential.userService
-        );
-        const service = await chooseService(credentialServices);
-        const selectedService = credentials.find(
-          (credential) => credential.userService === service
-        );
+        switch (action) {
+          case "show":
+            {
+              const credentialServices = credentials.map(
+                (credential) => credential.userService
+              );
+              const service = await chooseService(credentialServices);
+              const selectedService = credentials.find(
+                (credential) => credential.userService === service
+              );
+              if (selectedService) {
+                selectedService.userPassword = CryptoJS.AES.decrypt(
+                  selectedService.userPassword,
+                  "passwordHash"
+                ).toString(CryptoJS.enc.Utf8);
+              }
 
-        console.log(selectedService);
+              console.log(selectedService);
 
-        printPassword(service);
+              // printPassword(service);
+            }
+            break;
+
+          case "delete": {
+            const credentialServices = credentials.map(
+              (credential) => credential.userService
+            );
+            const service = await chooseService(credentialServices);
+            const selectedService = credentials.find(
+              (credential) => credential.userService === service
+            );
+            if (selectedService) {
+              deleteCredentials(selectedService);
+
+              console.log(`${service} is removed from list.`);
+            }
+          }
+        }
       }
       break;
     case "add":
       {
         const newCredential = await askForNewCredentials();
-        console.log(newCredential);
+
+        await writeCredentials(newCredential);
       }
       break;
   }
