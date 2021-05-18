@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import {
   deleteCredentials,
   readCredentials,
-  writeCredentials,
+  saveCredential,
 } from "./utils/credentials";
 // import { printPassword } from "./utils/messages";
 import {
@@ -15,7 +15,7 @@ import {
 } from "./utils/questions";
 import { isMainPasswordValid } from "./utils/validation";
 import CryptoJS from "crypto-js";
-import { connectDatabase } from "./utils/database";
+import { connectDatabase, disconnectDatabase } from "./utils/database";
 
 dotenv.config();
 
@@ -84,10 +84,10 @@ const start = async () => {
     case "add":
       {
         const newCredential = await askForNewCredentials();
-
-        await writeCredentials(newCredential);
+        await saveCredential(newCredential);
       }
       break;
   }
+  await disconnectDatabase();
 };
 start();
