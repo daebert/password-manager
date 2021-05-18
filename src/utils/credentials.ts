@@ -35,7 +35,7 @@ export const deleteCredentials = async (
 ): Promise<void> => {
   const allCredentials = await readCredentials();
   const filteredCredentials = allCredentials.filter(
-    (credential) => credential.userService != selectedService.userService
+    (credential) => credential.userService !== selectedService.userService
   );
   console.log(filteredCredentials);
   await fs.writeFile(
@@ -44,3 +44,6 @@ export const deleteCredentials = async (
     "utf-8"
   );
 };
+// function passwordHash(userPassword: string, passwordHash: any) {
+//   throw new Error("Function not implemented.");
+// }
