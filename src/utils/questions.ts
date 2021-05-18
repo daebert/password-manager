@@ -31,12 +31,24 @@ export const chooseCommand = async (): Promise<Command> => {
 export const chooseService = async (services: string[]): Promise<string> => {
   const answers = await inquirer.prompt<{ service: string }>({
     type: "list",
-
     name: "service",
     message: "Please choose a service",
     choices: services,
   });
   return answers.service;
+};
+
+export const chooseAction = async (): Promise<string> => {
+  const answers = await inquirer.prompt<{ action: string }>({
+    type: "list",
+    name: "action",
+    message: "Show or delete service",
+    choices: [
+      { name: "Show", value: "show" },
+      { name: "Delete", value: "delete" },
+    ],
+  });
+  return answers.action;
 };
 
 // export const askForNewCredentials = async (): Promise<string> => {
