@@ -1,7 +1,9 @@
 {
   "credentials": [
-    { "userService": "GitHub", "userName": "Daniel", "userPassword": "321" },
-    { "userService": "Google", "userName": "Dan", "userPassword": "123" },
-    { "userService": "Codewars", "userName": "D", "userPassword": "abc" }
+    {
+      "userService": "Hello1",
+      "userName": "Hello1",
+      "userPassword": "U2FsdGVkX19IfCMsFo74jAojrD59Um80SRq2IIYPWVI="
+    }
   ]
 }
