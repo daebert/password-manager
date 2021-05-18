@@ -1,11 +1,10 @@
 import dotenv from "dotenv";
 
 import {
-  deleteCredentials,
   readCredentials,
+  deleteCredential,
   saveCredential,
 } from "./utils/credentials";
-// import { printPassword } from "./utils/messages";
 import {
   askForMainPassword,
   askForNewCredentials,
@@ -59,11 +58,8 @@ const start = async () => {
               }
 
               console.log(selectedService);
-
-              // printPassword(service);
             }
             break;
-
           case "delete": {
             const credentialServices = credentials.map(
               (credential) => credential.userService
@@ -73,11 +69,24 @@ const start = async () => {
               (credential) => credential.userService === service
             );
             if (selectedService) {
-              deleteCredentials(selectedService);
-
+              await deleteCredential(selectedService);
               console.log(`${service} removed from list.`);
             }
           }
+
+          //     case "delete": {
+          //       const credentialServices = credentials.map(
+          //         (credential) => credential.userService
+          //       );
+          //       const service = await chooseService(credentialServices);
+          //       const selectedService = credentials.find(
+          //         (credential) => credential.userService === service
+          //       );
+          //       if (selectedService) {
+          //         deleteCredentials(selectedService);
+
+          //         console.log(`${service} removed from list.`);
+          //       }
         }
       }
       break;

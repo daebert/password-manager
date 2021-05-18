@@ -1,17 +1,17 @@
-import fs from "fs/promises";
+// import fs from "fs/promises";
 import type { Credential } from "../types";
 import CryptoJS from "crypto-js";
-import { getCollection } from "./database";
+import { getCredentialsCollection } from "./database";
 
-type DB = {
-  credentials: Credential[];
-};
+// type DB = {
+//   credentials: Credential[];
+// };
 
-export const readCredentials = async (): Promise<Credential[]> => {
-  const response = await fs.readFile("./db.json", "utf-8");
-  const data: DB = JSON.parse(response);
-  return data.credentials;
-};
+// export const readCredentials = async (): Promise<Credential[]> => {
+//   const response = await fs.readFile("./db.json", "utf-8");
+//   const data: DB = JSON.parse(response);
+//   return data.credentials;
+// };
 
 // export const writeCredentials = async (
 //   newCredential: Credential
@@ -38,23 +38,33 @@ export const saveCredential = async (
     newCredential.userPassword,
     "passwordHash"
   ).toString();
-  await getCollection("credentials").insertOne(newCredential);
+  await getCredentialsCollection().insertOne(newCredential);
 };
 
-export const deleteCredentials = async (
+export const readCredentials = async (): Promise<Credential[]> => {
+  return await getCredentialsCollection().find().sort({ service: 1 }).toArray();
+};
+
+export const deleteCredential = async (
   selectedService: Credential
 ): Promise<void> => {
-  const allCredentials = await readCredentials();
-  const filteredCredentials = allCredentials.filter(
-    (credential) => credential.userService !== selectedService.userService
-  );
-  console.log(filteredCredentials);
-  await fs.writeFile(
-    "./db.json",
-    JSON.stringify({ credentials: filteredCredentials }, null, 2),
-    "utf-8"
-  );
+  await getCredentialsCollection().deleteOne(selectedService);
 };
+
+// export const deleteCredentials = async (
+//   selectedService: Credential
+// ): Promise<void> => {
+//   const allCredentials = await readCredentials();
+//   const filteredCredentials = allCredentials.filter(
+//     (credential) => credential.userService !== selectedService.userService
+//   );
+//   console.log(filteredCredentials);
+//   await fs.writeFile(
+//     "./db.json",
+//     JSON.stringify({ credentials: filteredCredentials }, null, 2),
+//     "utf-8"
+//   );
+// };
 // function passwordHash(userPassword: string, passwordHash: any) {
 //   throw new Error("Function not implemented.");
 // }
