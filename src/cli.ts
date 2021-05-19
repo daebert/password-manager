@@ -53,7 +53,7 @@ const start = async () => {
           case "delete": {
             const selectedCredential = await selectCredential();
             if (selectedCredential) {
-              await deleteCredential(selectedCredential);
+              await deleteCredential(selectedCredential.userService);
               console.log("Service removed from list.");
             }
           }

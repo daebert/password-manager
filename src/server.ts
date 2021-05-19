@@ -2,7 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { readCredentials, saveCredential } from "./utils/credentials";
+import {
+  deleteCredential,
+  readCredentials,
+  saveCredential,
+} from "./utils/credentials";
 import { connectDatabase } from "./utils/database";
 
 if (process.env.MONGO_URL === undefined) {
@@ -25,9 +29,15 @@ app.post("/api/credentials", async (request, response) => {
   response.json(request.body);
 });
 
+app.delete("/api/credentials/:userService", async (request, response) => {
+  console.log(request.params.userService);
+  await deleteCredential(request.params.userService);
+  response.send("delete credential");
+});
+
 connectDatabase(process.env.MONGO_URL).then(() => {
   console.log("Database connected");
   app.listen(port, () => {
-    console.log(`password-Manager listening at http://localhost:${port}`);
+    console.log(`myFirstDatabase listening at http://localhost:${port}`);
   });
 });
