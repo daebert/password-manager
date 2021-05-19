@@ -1,24 +1,21 @@
 import dotenv from "dotenv";
 
 import {
-  readCredentials,
   deleteCredential,
   saveCredential,
+  selectCredential,
 } from "./utils/credentials";
 import {
   askForMainPassword,
   askForNewCredentials,
   chooseAction,
   chooseCommand,
-  chooseService,
 } from "./utils/questions";
 import { isMainPasswordValid } from "./utils/validation";
 import CryptoJS from "crypto-js";
 import { connectDatabase, disconnectDatabase } from "./utils/database";
 
 dotenv.config();
-
-// console.log(process.env.MONGO_URL);
 
 const start = async () => {
   if (process.env.MONGO_URL === undefined) {
@@ -39,54 +36,27 @@ const start = async () => {
     case "list":
       {
         const action = await chooseAction();
-        const credentials = await readCredentials();
         switch (action) {
           case "show":
             {
-              const credentialServices = credentials.map(
-                (credential) => credential.userService
-              );
-              const service = await chooseService(credentialServices);
-              const selectedService = credentials.find(
-                (credential) => credential.userService === service
-              );
-              if (selectedService) {
-                selectedService.userPassword = CryptoJS.AES.decrypt(
-                  selectedService.userPassword,
+              const selectedCredential = await selectCredential();
+              if (selectedCredential) {
+                selectedCredential.userPassword = CryptoJS.AES.decrypt(
+                  selectedCredential.userPassword,
                   "passwordHash"
                 ).toString(CryptoJS.enc.Utf8);
               }
 
-              console.log(selectedService);
+              console.log(selectedCredential);
             }
             break;
           case "delete": {
-            const credentialServices = credentials.map(
-              (credential) => credential.userService
-            );
-            const service = await chooseService(credentialServices);
-            const selectedService = credentials.find(
-              (credential) => credential.userService === service
-            );
-            if (selectedService) {
-              await deleteCredential(selectedService);
-              console.log(`${service} removed from list.`);
+            const selectedCredential = await selectCredential();
+            if (selectedCredential) {
+              await deleteCredential(selectedCredential);
+              console.log("Service removed from list.");
             }
           }
-
-          //     case "delete": {
-          //       const credentialServices = credentials.map(
-          //         (credential) => credential.userService
-          //       );
-          //       const service = await chooseService(credentialServices);
-          //       const selectedService = credentials.find(
-          //         (credential) => credential.userService === service
-          //       );
-          //       if (selectedService) {
-          //         deleteCredentials(selectedService);
-
-          //         console.log(`${service} removed from list.`);
-          //       }
         }
       }
       break;

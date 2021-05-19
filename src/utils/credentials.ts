@@ -1,35 +1,7 @@
-// import fs from "fs/promises";
 import type { Credential } from "../types";
 import CryptoJS from "crypto-js";
 import { getCredentialsCollection } from "./database";
-
-// type DB = {
-//   credentials: Credential[];
-// };
-
-// export const readCredentials = async (): Promise<Credential[]> => {
-//   const response = await fs.readFile("./db.json", "utf-8");
-//   const data: DB = JSON.parse(response);
-//   return data.credentials;
-// };
-
-// export const writeCredentials = async (
-//   newCredential: Credential
-// ): Promise<void> => {
-// newCredential.userPassword = CryptoJS.AES.encrypt(
-//   newCredential.userPassword,
-//   "passwordHash"
-// ).toString();
-
-//   const listCredentials = await readCredentials();
-//   listCredentials.push(newCredential);
-
-//   await fs.writeFile(
-//     "./db.json",
-//     JSON.stringify({ credentials: listCredentials }, null, 2),
-//     "utf-8"
-//   );
-// };
+import { chooseService } from "./questions";
 
 export const saveCredential = async (
   newCredential: Credential
@@ -46,25 +18,22 @@ export const readCredentials = async (): Promise<Credential[]> => {
 };
 
 export const deleteCredential = async (
-  selectedService: Credential
+  selectedCredential: Credential
 ): Promise<void> => {
-  await getCredentialsCollection().deleteOne(selectedService);
+  await getCredentialsCollection().deleteOne(selectedCredential);
 };
 
-// export const deleteCredentials = async (
-//   selectedService: Credential
-// ): Promise<void> => {
-//   const allCredentials = await readCredentials();
-//   const filteredCredentials = allCredentials.filter(
-//     (credential) => credential.userService !== selectedService.userService
-//   );
-//   console.log(filteredCredentials);
-//   await fs.writeFile(
-//     "./db.json",
-//     JSON.stringify({ credentials: filteredCredentials }, null, 2),
-//     "utf-8"
-//   );
-// };
-// function passwordHash(userPassword: string, passwordHash: any) {
-//   throw new Error("Function not implemented.");
-// }
+export async function selectCredential(): Promise<Credential> {
+  const credentials = await readCredentials();
+  const credentialServices = credentials.map(
+    (credential) => credential.userService
+  );
+  const service = await chooseService(credentialServices);
+  const selectedCredential = credentials.find(
+    (credential) => credential.userService === service
+  );
+  if (!selectedCredential) {
+    throw new Error("Cannot find credential");
+  }
+  return selectedCredential;
+}
