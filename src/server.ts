@@ -4,6 +4,7 @@ dotenv.config();
 import express from "express";
 import {
   deleteCredential,
+  readCredential,
   readCredentials,
   saveCredential,
 } from "./utils/credentials";
@@ -23,6 +24,11 @@ app.get("/api/credentials", async (_request, response) => {
   response.json(credentials);
 });
 
+app.get("/api/credentials/:userService", async (request, response) => {
+  const credential = await readCredential(request.params.userService);
+  response.json(credential);
+});
+
 app.post("/api/credentials", async (request, response) => {
   const newCredential = await request.body;
   saveCredential(newCredential);
@@ -30,7 +36,6 @@ app.post("/api/credentials", async (request, response) => {
 });
 
 app.delete("/api/credentials/:userService", async (request, response) => {
-  console.log(request.params.userService);
   await deleteCredential(request.params.userService);
   response.send("delete credential");
 });
