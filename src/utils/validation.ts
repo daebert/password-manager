@@ -1,6 +1,3 @@
-// export const isMainPasswordValid = (mainPassword: string): boolean => {
-//   return mainPassword === "123";
-// };
 import SHA256 from "crypto-js/sha256";
 import fs from "fs/promises";
 
