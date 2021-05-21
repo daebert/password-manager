@@ -14,13 +14,26 @@ export const saveCredential = async (
 };
 
 export const readCredentials = async (): Promise<Credential[]> => {
-  return await getCredentialsCollection().find().sort({ service: 1 }).toArray();
+  return await getCredentialsCollection()
+    .find()
+    .sort({ userService: 1 })
+    .toArray();
 };
 
-export const deleteCredential = async (
-  selectedCredential: Credential
-): Promise<void> => {
-  await getCredentialsCollection().deleteOne(selectedCredential);
+export const readCredential = async (
+  userService: string
+): Promise<Credential> => {
+  const oneCredential = await getCredentialsCollection().findOne({
+    userService,
+  });
+  if (!oneCredential) {
+    throw new Error(`Service does not exist: ${userService}`);
+  }
+  return oneCredential;
+};
+
+export const deleteCredential = async (userService: string): Promise<void> => {
+  await getCredentialsCollection().deleteOne({ userService: userService });
 };
 
 export async function selectCredential(): Promise<Credential> {
